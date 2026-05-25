@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build and packaged extension artifacts
+dist/
+build/
+out/
+release/
+*.crx
+*.zip
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets.*
+
+# Local editor, agent, and OS files
+.agents/
+.claude/
+.idea/
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+coverage/
+.cache/

@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>后台控制 - 书签分类启动器</title>
+    <link rel="stylesheet" href="./options.css">
+  </head>
+  <body>
+    <main class="settings-shell">
+      <aside class="sidebar" aria-label="后台控制导航">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">书</div>
+          <div>
+            <div class="brand-title">书签分类启动器</div>
+            <div class="brand-subtitle">后台控制</div>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <button class="nav-button is-active" type="button" data-section="basic">基础设置</button>
+          <button class="nav-button" type="button" data-section="categories">分类管理</button>
+          <button class="nav-button" type="button" data-section="bookmarks">书签归类</button>
+          <button class="nav-button" type="button" data-section="rules">规则中心</button>
+          <button class="nav-button" type="button" data-section="ai">AI 配置</button>
+          <button class="nav-button" type="button" data-section="about">关于</button>
+        </nav>
+      </aside>
+
+      <section class="workspace">
+        <header class="workspace-head">
+          <div>
+            <h1 id="sectionTitle">基础设置</h1>
+            <p id="sectionLead">调整插件弹窗外观、书签同步方式和语言。</p>
+          </div>
+        </header>
+
+        <section class="section-panel is-active" id="section-basic" data-title="基础设置" data-lead="调整插件弹窗外观、书签同步方式和语言。">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>外观</h2>
+              <span>弹窗中即时生效</span>
+            </div>
+            <div class="form-grid">
+              <label class="field">
+                <span>主题色</span>
+                <select id="themeSelect"></select>
+              </label>
+              <label class="field check-field">
+                <input id="showFavicons" type="checkbox">
+                <span>显示网站图标<br><small>在书签旁显示各网站的标识小图标</small></span>
+              </label>
+              <label class="field check-field">
+                <input id="customAccentEnabled" type="checkbox">
+                <span>启用自定义强调色<br><small>覆盖主题预设的强调色，用于突出按钮和选中状态</small></span>
+              </label>
+              <label class="field">
+                <span>自定义强调色</span>
+                <input id="customAccentColor" type="color" value="#207457">
+              </label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>弹窗交互</h2>
+              <span>控制悬停展开和动画过渡效果</span>
+            </div>
+            <div class="form-grid">
+              <label class="field">
+                <span>悬停展开延迟（毫秒）</span>
+                <input id="hoverDelayMs" type="number" min="120" max="1200" step="20" placeholder="120-1200，默认 360">
+              </label>
+              <label class="field">
+                <span>弹窗宽度动画（毫秒）</span>
+                <input id="shellAnimationMs" type="number" min="120" max="900" step="20" placeholder="120-900，默认 320">
+              </label>
+              <label class="field">
+                <span>列宽变化动画（毫秒）</span>
+                <input id="columnAnimationMs" type="number" min="120" max="900" step="20" placeholder="120-900，默认 260">
+              </label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>书签同步</h2>
+              <span id="syncModeHint">当前为手动同步</span>
+            </div>
+            <div class="form-grid">
+              <label class="field">
+                <span>同步方式</span>
+                <select id="syncMode">
+                  <option value="manual">手动同步</option>
+                  <option value="popup-open">打开弹窗时同步</option>
+                  <option value="background">后台定时同步</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>后台同步间隔（分钟）</span>
+                <input id="syncInterval" type="number" min="15" max="1440" step="5" placeholder="15-1440，默认 60">
+              </label>
+              <label class="field">
+                <span>界面语言</span>
+                <select id="localeSelect">
+                  <option value="zh-CN">简体中文</option>
+                </select>
+              </label>
+            </div>
+            <div class="action-row">
+              <button class="ghost-button" id="runManualSync" type="button">立即同步</button>
+            </div>
+          </div>
+
+          <div class="metric-grid">
+            <div class="metric">
+              <span>最近同步</span>
+              <strong id="lastSyncedAt">尚未同步</strong>
+            </div>
+            <div class="metric">
+              <span>书签数量</span>
+              <strong id="syncedBookmarkCount">0</strong>
+            </div>
+            <div class="metric">
+              <span>同步状态</span>
+              <strong id="syncStatus">待同步</strong>
+            </div>
+            <div class="metric">
+              <span>执行来源</span>
+              <strong id="syncSource">browser-bookmarks</strong>
+            </div>
+          </div>
+
+          <div class="panel" id="syncErrorPanel" hidden>
+            <div class="panel-head">
+              <h2>最近错误</h2>
+              <span>来自本地同步流程</span>
+            </div>
+            <div class="error-text" id="syncErrorText"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>数据与隐私</h2>
+              <span>高级能力预留</span>
+            </div>
+            <div class="empty-note">
+              当前版本只在本地保存分类、关联、同步快照、设置和点击统计；备份恢复入口将在后续版本补齐。
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button class="primary-button" id="saveBasicSettings" type="button">保存基础设置</button>
+          </div>
+        </section>
+
+
+        <section class="section-panel" id="section-categories" data-title="分类管理" data-lead="管理分类树和书签分类，支持拖拽排序，修改需确认后生效。">
+          <div class="panel import-export-panel">
+            <div class="panel-head">
+              <h2>分类数据导入 / 导出</h2>
+              <span>只处理插件本地分类树和书签分类标记，不修改浏览器原始书签。</span>
+            </div>
+            <div class="backup-actions">
+              <button class="ghost-button" id="exportCategoryData" type="button">导出分类数据</button>
+              <label class="field compact-field">
+                <span>导入策略</span>
+                <select id="importCategoryMode">
+                  <option value="overwrite">覆盖：以导入数据为准</option>
+                  <option value="preserve">保留：只补齐当前没有分类的书签</option>
+                  <option value="append">新增：仅写入没有冲突的数据</option>
+                </select>
+              </label>
+              <button class="primary-button" id="importCategoryData" type="button">导入分类数据</button>
+              <input id="importCategoryFile" type="file" accept="application/json,.json" hidden>
+            </div>
+          </div>
+
+          <div class="panel ai-rule-panel">
+            <div class="ai-rule-card">
+              <div class="ai-rule-main">
+                <div class="ai-rule-kicker">AI 分类任务</div>
+                <h2>AI 处理未分类书签</h2>
+                <div class="ai-rule-flow" aria-label="AI 处理未分类书签顺序">
+                  <span>识别新增分组</span>
+                  <span>生成书签归类</span>
+                  <span>预览后应用</span>
+                </div>
+              </div>
+              <div class="ai-rule-actions">
+                <button class="primary-button" id="runAiClassifyUnprocessed" type="button">开始分析</button>
+                <button class="ghost-button" id="openAiSettingsFromRules" type="button">AI 配置</button>
+              </div>
+            </div>
+            <div class="ai-task-status" id="aiClassificationStatus" hidden>
+              <span class="ai-task-spinner" aria-hidden="true"></span>
+              <strong id="aiClassificationStatusTitle">等待开始</strong>
+              <span id="aiClassificationStatusDetail">点击开始分析后，这里会显示当前处理进度。</span>
+            </div>
+            <div class="ai-rule-meta-grid">
+              <div>
+                <span>当前厂家</span>
+                <strong id="aiClassifyProviderStatus">未配置</strong>
+              </div>
+              <div>
+                <span>每批数量</span>
+                <strong id="aiClassifyBatchSizeLabel">30 条</strong>
+              </div>
+              <div>
+                <span>发送字段</span>
+                <strong id="aiClassifyFieldList">网页名、完整网址</strong>
+              </div>
+              <div>
+                <span>本地分组</span>
+                <strong id="aiClassifyGroupState">读取中</strong>
+              </div>
+              <div>
+                <span>处理对象</span>
+                <strong id="aiClassifyTargetCount">0 个未分类书签</strong>
+              </div>
+              <div>
+                <span>响应格式</span>
+                <strong id="aiClassifyResultShape">分类体系草案 → 书签归类</strong>
+              </div>
+            </div>
+            <div class="ai-preview-panel" id="aiClassificationPreviewPanel" hidden>
+              <div class="panel-head">
+                <h2>AI 分类结果预览</h2>
+                <span id="aiClassificationPreviewSummary">尚未收到 AI 结果</span>
+              </div>
+              <div class="ai-preview-toolbar">
+                <button class="ghost-button" id="selectAllAiClassification" type="button">全选</button>
+                <button class="ghost-button" id="clearAiClassificationSelection" type="button">全不选</button>
+              </div>
+              <div class="ai-preview-grid" id="aiClassificationPreviewList"></div>
+              <div class="action-row">
+                <button class="primary-button" id="applyAiClassification" type="button">应用勾选结果</button>
+                <button class="ghost-button" id="discardAiClassification" type="button">放弃本次结果</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="cat-split" id="catSplit">
+            <div class="cat-tree-panel panel" id="catTreePanel">
+              <div class="panel-head">
+                <h2>本地分类树</h2>
+                <div class="cat-head-actions">
+                  <label class="switch-field">
+                    <input id="batchManageEnabled" type="checkbox">
+                    <span>批量管理</span>
+                  </label>
+                  <label class="switch-field">
+                    <input id="showBookmarkPanel" type="checkbox">
+                    <span>显示分类下书签</span>
+                  </label>
+                  <span class="inline-pending-hint" id="categoryPendingHint" hidden>有未保存的更改</span>
+                  <button class="ghost-button save-inline-btn" id="confirmCategoryChanges" type="button" hidden>保存</button>
+                  <button class="ghost-button" id="discardCategoryChanges" type="button" hidden>放弃</button>
+                </div>
+              </div>
+              <div class="cat-tree-subhead">
+                <button class="add-cat-btn" id="addRootCategory" type="button" title="新增一级分类">+</button>
+                <select id="expandLevel" class="expand-select"></select>
+                <span class="tree-hint">点击分类展开/收起 · 拖动排序 · 点击 ✎ 重命名</span>
+              </div>
+              <div class="tree-view" id="categoryTreeView"></div>
+            </div>
+            <div class="cat-bookmark-panel panel" id="catBookmarkPanel" hidden>
+              <div class="panel-head">
+                <div>
+                  <h2 id="selectedCategoryLabel">选择分类查看书签</h2>
+                  <span id="selectedCategoryBookmarkCount"></span>
+                </div>
+                <div class="bookmark-panel-head-actions">
+                  <fieldset class="drag-mode-toggle" aria-label="拖拽模式">
+                    <legend>拖拽模式:</legend>
+                    <label>
+                      <input id="dragModeMove" name="bookmarkDragMode" type="radio" value="move">
+                      <span>移动</span>
+                    </label>
+                    <label>
+                      <input id="dragModeCopy" name="bookmarkDragMode" type="radio" value="copy">
+                      <span>复制</span>
+                    </label>
+                  </fieldset>
+                  <div class="cat-head-actions">
+                    <span class="inline-pending-hint" id="bookmarkPendingHint" hidden>有未保存的书签更改</span>
+                    <button class="ghost-button save-inline-btn" id="confirmBookmarkChanges" type="button" hidden>保存</button>
+                    <button class="ghost-button" id="discardBookmarkChanges" type="button" hidden>放弃</button>
+                  </div>
+                </div>
+              </div>
+              <div class="list-view" id="catBookmarksList"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-panel" id="section-bookmarks" data-title="书签归类" data-lead="查看同步快照、默认状态和本地分类关联。">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>书签快照</h2>
+              <span id="bookmarkSummary">0 个书签</span>
+            </div>
+            <div class="toolbar">
+              <label class="field compact-field">
+                <span>筛选</span>
+                <select id="bookmarkFilter">
+                  <option value="all">全部书签</option>
+                  <option value="uncategorized">仅默认</option>
+                </select>
+              </label>
+              <label class="field compact-field">
+                <span>搜索</span>
+                <input id="bookmarkSearch" type="search" placeholder="标题、域名或 URL">
+              </label>
+            </div>
+            <div class="list-view" id="bookmarksList"></div>
+          </div>
+        </section>
+
+        <section class="section-panel" id="section-rules" data-title="规则中心" data-lead="创建本地分类匹配规则，预览后可批量写入本地分类关联。">
+          <div class="rule-entry-grid">
+            <button class="rule-entry-card classify" id="newClassifyRuleGroup" type="button">
+              <strong>新建归类规则组</strong>
+              <span>把未分类书签归入指定分类</span>
+            </button>
+            <button class="rule-entry-card remove" id="newRemoveRuleGroup" type="button">
+              <strong>新建移出分类规则组</strong>
+              <span>把已分类书签从指定分类移出</span>
+            </button>
+          </div>
+
+          <div class="panel rule-form-panel is-collapsed" id="ruleFormPanel">
+            <div class="panel-head">
+              <h2 id="ruleFormTitle">新增归类规则组</h2>
+              <button class="ghost-button" id="toggleRuleForm" type="button">展开</button>
+            </div>
+            <div class="rule-form-body" id="ruleFormBody" hidden>
+              <div class="rules-fixed-grid">
+                <label class="field">
+                  <span>规则组名称</span>
+                  <input id="ruleGroupName" type="text" placeholder="例如：开发资料归类">
+                </label>
+                <label class="field">
+                  <span>规则名称</span>
+                  <input id="ruleName" type="text" placeholder="例如：开发网站关键词">
+                </label>
+                <label class="field">
+                  <span>规则组类型</span>
+                  <input id="ruleGroupTypeLabel" type="text" value="归类规则组" disabled>
+                </label>
+              </div>
+              <div class="rule-multi-grid">
+                <div class="field">
+                  <span>匹配字段</span>
+                  <div class="rule-check-list" id="ruleFieldList"></div>
+                </div>
+                <div class="field">
+                  <span>匹配方式</span>
+                  <div class="rule-check-list" id="ruleTypeList"></div>
+                </div>
+                <div class="field">
+                  <span id="ruleCategoryLabel">目标分类组</span>
+                  <select id="ruleCategoryLevel"></select>
+                  <div class="rule-check-list rule-category-list" id="ruleCategoryList"></div>
+                </div>
+              </div>
+              <div class="rule-override-grid">
+                <label class="field full-field">
+                  <span>复写匹配内容</span>
+                  <textarea id="rulePattern" rows="3" placeholder="输入用户可维护的关键词、域名或表达式。多行会按“任一行命中”处理。"></textarea>
+                </label>
+                <label class="field full-field">
+                  <span>复写备注</span>
+                  <textarea id="ruleNote" rows="3" placeholder="记录为什么这样归类，方便之后自己调整。"></textarea>
+                </label>
+              </div>
+              <div class="action-row">
+                <button class="primary-button" id="saveRule" type="button">保存规则组</button>
+                <button class="ghost-button" id="resetRuleForm" type="button">清空</button>
+                <span class="inline-pending-hint">预览确认后才会写入本地分类关联，不修改浏览器原始书签。</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>分类匹配规则</h2>
+              <div class="inline-actions">
+                <button class="ghost-button" id="previewAllRules" type="button">预览全部规则组</button>
+                <button class="ghost-button" id="applyAllRules" type="button">应用预览结果</button>
+              </div>
+            </div>
+            <div class="rule-preview-summary" id="rulePreviewSummary">尚未预览规则。</div>
+            <div class="list-view" id="rulePreviewList"></div>
+            <div class="list-view" id="rulesList"></div>
+          </div>
+        </section>
+
+        <section class="section-panel" id="section-ai" data-title="AI 配置" data-lead="保存 AI 厂家、请求参数和不同任务的提示词模板；只有手动测试或执行 AI 任务时才会请求外部 API。">
+          <details class="panel collapsible-panel">
+            <summary class="panel-head">
+              <h2>新增厂家</h2>
+              <span>API Key 仅保存到本地 storage</span>
+            </summary>
+            <div class="form-grid">
+              <label class="field">
+                <span>厂家名称</span>
+                <input id="aiProviderName" type="text" placeholder="例如 OpenAI / 自定义服务">
+              </label>
+              <label class="field">
+                <span>排序权重</span>
+                <input id="aiProviderOrder" type="number" step="1" placeholder="0">
+              </label>
+              <label class="field">
+                <span>可选厂家类型</span>
+                <select id="aiProviderType">
+                  <option value="openai-compatible">OpenAI 兼容格式</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>接口 URL</span>
+                <input id="aiProviderUrl" type="url" placeholder="https://api.openai.com/v1/chat/completions">
+              </label>
+              <label class="field">
+                <span>API Key</span>
+                <input id="aiProviderKey" type="password" autocomplete="new-password">
+              </label>
+              <label class="field">
+                <span>模型名</span>
+                <input id="aiProviderModel" type="text" placeholder="model-name">
+              </label>
+              <label class="field">
+                <span>接口类型</span>
+                <select id="aiProviderApiMode">
+                  <option value="chatCompletions">Chat Completions</option>
+                  <option value="responses">Responses</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>响应格式</span>
+                <select id="aiProviderResponseFormat">
+                  <option value="json_schema">JSON Schema</option>
+                  <option value="json_object">JSON Object</option>
+                  <option value="text">Text</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Temperature (0-2)</span>
+                <input id="aiProviderTemperature" type="number" min="0" max="2" step="0.1" placeholder="0.2">
+              </label>
+              <label class="field">
+                <span>Max Tokens</span>
+                <input id="aiProviderMaxTokens" type="number" min="1" max="1000000" step="1" placeholder="2048">
+              </label>
+              <label class="field">
+                <span>请求超时 (ms)</span>
+                <input id="aiProviderTimeoutMs" type="number" min="1000" max="600000" step="1000" placeholder="30000">
+              </label>
+              <label class="check-line">
+                <input id="aiProviderStream" type="checkbox">
+                <span>启用流式传输</span>
+              </label>
+            </div>
+            <label class="field full-field">
+              <span>自定义 Header 参数</span>
+              <textarea id="aiProviderHeaders" rows="3" placeholder='JSON 格式，例如 {"User-Agent":"BookmarkLauncher/0.1"}'></textarea>
+            </label>
+            <label class="field full-field">
+              <span>自定义 Body 参数</span>
+              <textarea id="aiProviderBody" rows="3" placeholder='JSON 格式，例如 {"top_p":0.7}'></textarea>
+            </label>
+            <label class="field full-field">
+              <span>书签自动分类提示词</span>
+              <textarea id="aiProviderClassificationPrompt" rows="6"></textarea>
+            </label>
+            <label class="field full-field">
+              <span>书签索引建立提示词</span>
+              <textarea id="aiProviderIndexingPrompt" rows="5"></textarea>
+            </label>
+            <div class="action-row">
+              <button class="ghost-button" id="testNewAiProvider" type="button">测试连接</button>
+              <button class="primary-button" id="addAiProvider" type="button">新增厂家</button>
+            </div>
+          </details>
+
+          <details class="panel collapsible-panel">
+            <summary class="panel-head">
+              <h2>已配置厂家</h2>
+              <span id="aiProviderSummary">0 个</span>
+            </summary>
+            <div class="action-row provider-list-actions">
+              <button class="ghost-button" id="testActiveAiProvider" type="button">测试当前启用配置</button>
+            </div>
+            <div class="provider-list" id="aiProvidersList"></div>
+          </details>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>AI 任务配置</h2>
+              <span>选择发送给 AI 的字段，并控制每次请求规模</span>
+            </div>
+            <h3 class="subsection-title">分析内容</h3>
+            <div class="check-grid" id="analysisFieldList"></div>
+            <h3 class="subsection-title">AI 任务参数</h3>
+            <div class="form-grid">
+              <label class="field">
+                <span>书签自动分类每批数量</span>
+                <input id="classificationBatchSize" type="number" min="1" max="500" step="1" placeholder="默认 10">
+              </label>
+              <label class="field">
+                <span>书签索引每批数量</span>
+                <input id="indexingBatchSize" type="number" min="1" max="500" step="1" placeholder="默认 50">
+              </label>
+            </div>
+            <div class="action-row">
+              <button class="primary-button" id="saveAiSettings" type="button">保存 AI 配置</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-panel" id="section-about" data-title="关于" data-lead="版本、隐私原则和后续项目入口。">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>插件信息</h2>
+              <span id="extensionVersion">v0.1.0</span>
+            </div>
+            <div class="about-list">
+              <div>
+                <strong>产品定位</strong>
+                <span>基于浏览器原生书签的本地分类启动器。</span>
+              </div>
+              <div>
+                <strong>隐私原则</strong>
+                <span>默认不发送书签、网页正文或摘要到外部 API。</span>
+              </div>
+              <div>
+                <strong>权限边界</strong>
+                <span>当前只使用 bookmarks、storage、favicon 和 alarms。</span>
+              </div>
+              <div>
+                <strong>开源地址</strong>
+                <span>预留，后续开源后补充。</span>
+              </div>
+              <div>
+                <strong>使用规则</strong>
+                <span>预留，后续补充详细说明。</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>卸载前清理</h2>
+              <span>浏览器卸载扩展时会移除本扩展 storage 和缓存；这里可提前导出并清空本地数据。</span>
+            </div>
+            <div class="backup-actions">
+              <button class="ghost-button" id="exportBeforeClear" type="button">先导出分类数据</button>
+              <button class="danger-button" id="clearExtensionData" type="button">清空插件本地数据</button>
+            </div>
+            <div class="empty-note">
+              此操作只清除插件自己的本地分类、设置、同步快照、点击统计和 AI 配置，不会删除、移动或重命名浏览器原有书签。
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./options.js"></script>
+  </body>
+</html>

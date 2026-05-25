@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Popup 书签分类启动器",
+  "description": "基于浏览器原生书签的本地分类启动器。",
+  "version": "0.1.0",
+  "action": {
+    "default_title": "书签分类启动器",
+    "default_popup": "src/popup/popup.html"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "src/background/background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "alarms",
+    "bookmarks",
+    "favicon",
+    "storage"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ]
+}
