@@ -20,6 +20,7 @@
 - popup 设置按钮已改为调用 `chrome.runtime.openOptionsPage()` 打开后台管理页。
 - 后台管理页第一版包含 7 个一级层级：基础设置、同步管理、分类管理、书签归类、规则中心、AI 配置、关于。
 - 共享存储字段、默认值和清洗逻辑集中在 `src/shared/storage.js`。
+- options page 脚本已拆分为模块：`src/options/options.js` 只负责启动和渲染注册；`options-common.js` 管理共享状态、DOM 映射、基础设置、书签快照、导入导出和浏览器 API 工具；`options-categories.js` 管理分类树、分类书签栏和拖拽编辑；`options-rules.js` 管理规则中心；`options-ai.js` 管理 AI 配置、请求分发和 AI 分类预览；`options-events.js` 集中绑定页面事件；`options-render.js` 提供跨模块刷新注册，避免模块循环依赖。
 
 ## 已实现能力
 
@@ -90,6 +91,7 @@
 ## 后续开发注意事项
 
 - 后台管理页不要从 popup 前端代码复制业务逻辑；共享逻辑优先放到 `src/shared/storage.js` 或后续共享模块。
+- 后续维护 options page 时按现有模块职责放置代码：公共状态/工具放 `options-common.js`，分类管理放 `options-categories.js`，规则中心放 `options-rules.js`，AI 配置和 AI 任务放 `options-ai.js`，事件绑定放 `options-events.js`；避免再把功能堆回 `options.js`。
 - popup 只消费本地设置和本地数据，不负责分类规则匹配、批量整理或 AI 分析。
 - 规则批量应用只能更新插件本地分类关联，不能修改浏览器原始收藏夹。
 - 当前规则中心已改为规则组和预览确认流；后续继续扩展时应优先保持“先预览、可勾选、再应用”的轻量任务流。
